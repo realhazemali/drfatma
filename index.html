@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عرض الشرائح التفاعلي</title>
+    <style>
+        /* --- تنسيقات أساسية --- */
+        :root {
+            --primary-color: #4a90e2;
+            --success-color: #2ecc71;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* --- حاوية الشرائح --- */
+        .slider-container {
+            background-color: var(--card-bg);
+            width: 90%;
+            height: 90vh;
+            max-width: 800px;
+            padding: 0;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            touch-action: pan-y;
+        }
+
+        /* --- الشريحة --- */
+        .slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+            animation: fadeEffect 0.6s;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        /* تأثير الحركة */
+        @keyframes fadeEffect {
+            from {opacity: 0; transform: translateY(20px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+        h2 { color: #333; margin-bottom: 15px; }
+        p { color: #666; line-height: 1.6; }
+
+        /* --- حقل الإدخال --- */
+        .password-input {
+            padding: 12px;
+            font-size: 18px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            width: 70%;
+            text-align: center;
+            margin: 20px 0;
+            transition: border-color 0.3s;
+        }
+        .password-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        /* --- الأزرار --- */
+        .btn {
+            padding: 10px 25px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-next {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .btn-next:hover { background-color: #357abd; }
+
+        .btn-prev {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+        .btn-prev:hover { background-color: #d4d4d4; }
+
+        /* --- زر التشغيل (Play) الخاص بالشريحة 10 --- */
+        .play-btn {
+            background-color: var(--success-color);
+            color: white;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            font-size: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px auto;
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+            cursor: pointer;
+            border: none;
+            transition: transform 0.2s;
+        }
+        
+        .play-btn:hover {
+            transform: scale(1.1);
+            background-color: #27ae60;
+        }
+
+        /* رسالة الخطأ */
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* عداد الشرائح */
+        .slide-counter {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 12px;
+            color: #aaa;
+            z-index: 20;
+            background: rgba(255,255,255,0.7);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        /* --- تنسيق الوسائط (صور/فيديو) --- */
+        .bg-media {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: contain;
+        }
+        
+        /* --- طبقة الأزرار --- */
+        .overlay {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+<div class="slider-container">
+    <div class="slide-counter">شريحة <span id="current-slide-num">1</span> من 14</div>
+
+    <!-- الشريحة 1: كلمة السر -->
+    <div class="slide active" id="slide-1">
+        <img src="Slide1.JPG" class="bg-media" alt="Slide 1">
+        <div class="overlay">
+            <input type="password" id="passInput" class="password-input" placeholder="أدخل كلمة السر (123)" style="width: 50%; opacity: 0.9;">
+            <br>
+            <button class="btn btn-next" onclick="checkPassword()">دخول</button>
+            <p class="error-message" id="errorMsg" style="background: rgba(255,255,255,0.8); display: inline-block; padding: 5px; border-radius: 5px; display: none;">كلمة المرور غير صحيحة!</p>
+        </div>
+    </div>
+
+    <!-- الشرائح من 2 إلى 9 -->
+    <div class="slide" id="slide-2">
+        <img src="Slide2.JPG" class="bg-media" alt="Slide 2">
+    </div>
+
+    <div class="slide" id="slide-3">
+        <img src="Slide3.JPG" class="bg-media" alt="Slide 3">
+    </div>
+
+    <div class="slide" id="slide-4">
+        <img src="Slide4.JPG" class="bg-media" alt="Slide 4">
+    </div>
+
+    <div class="slide" id="slide-5">
+        <img src="Slide5.JPG" class="bg-media" alt="Slide 5">
+    </div>
+
+    <div class="slide" id="slide-6">
+        <img src="Slide6.JPG" class="bg-media" alt="Slide 6">
+    </div>
+
+    <div class="slide" id="slide-7">
+        <img src="Slide7.JPG" class="bg-media" alt="Slide 7">
+    </div>
+
+    <div class="slide" id="slide-8">
+        <img src="Slide8.JPG" class="bg-media" alt="Slide 8">
+    </div>
+
+    <div class="slide" id="slide-9">
+        <img src="Slide9.JPG" class="bg-media" alt="Slide 9">
+    </div>
+
+    <!-- الشريحة 10: زر التشغيل (Play) -->
+    <div class="slide" id="slide-10">
+        <img src="Slide10.JPG" class="bg-media" alt="Slide 10">
+        <div class="overlay">
+            <button class="play-btn" onclick="goToSlide(11)">&#9658;</button>
+        </div>
+    </div>
+
+    <!-- الشريحة 11: فيديو -->
+    <div class="slide" id="slide-11">
+        <video class="bg-media" controls autoplay playsinline>
+            <source src="Slide11.mp4" type="video/mp4">
+            متصفحك لا يدعم الفيديو.
+        </video>
+    </div>
+
+    <!-- الشرائح الجديدة 12, 13, 14 -->
+    <div class="slide" id="slide-12">
+        <img src="Slide12.JPG" class="bg-media" alt="Slide 12">
+    </div>
+
+    <div class="slide" id="slide-13">
+        <img src="Slide13.JPG" class="bg-media" alt="Slide 13">
+    </div>
+
+    <div class="slide" id="slide-14">
+        <img src="Slide14.JPG" class="bg-media" alt="Slide 14">
+    </div>
+
+</div>
+
+<script>
+    // المتغيرات العامة
+    let currentSlide = 1;
+    const totalSlides = 14;
+
+    // دالة التحقق من كلمة السر
+    function checkPassword() {
+        const input = document.getElementById('passInput');
+        const error = document.getElementById('errorMsg');
+        
+        if (input.value === '123') {
+            error.style.display = 'none';
+            goToSlide(2);
+        } else {
+            error.style.display = 'block';
+            input.style.borderColor = 'red';
+            // إعادة لون الحدود بعد فترة قصيرة
+            setTimeout(() => {
+                input.style.borderColor = '#ddd';
+            }, 2000);
+        }
+    }
+
+    // دالة التنقل (التالي / السابق)
+    function moveSlide(n) {
+        goToSlide(currentSlide + n);
+    }
+
+    // دالة الانتقال لشريحة محددة
+    function goToSlide(slideIndex) {
+        // التأكد من أن الرقم ضمن النطاق المسموح
+        if (slideIndex < 1 || slideIndex > totalSlides) return;
+
+        // إخفاء الشريحة الحالية
+        document.getElementById(`slide-${currentSlide}`).classList.remove('active');
+        
+        // تحديث الرقم الحالي
+        currentSlide = slideIndex;
+        
+        // إظهار الشريحة الجديدة
+        document.getElementById(`slide-${currentSlide}`).classList.add('active');
+        
+        // تحديث عداد الشرائح في الأعلى
+        document.getElementById('current-slide-num').innerText = currentSlide;
+
+        // تشغيل الفيديو تلقائياً إذا وصلنا للشريحة 11
+        if (currentSlide === 11) {
+            const vid = document.querySelector('#slide-11 video');
+            if (vid) {
+                vid.play().catch(e => console.log("Autoplay prevented"));
+            }
+        }
+    }
+
+    // دعم زر Enter في حقل كلمة السر
+    document.getElementById('passInput').addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            checkPassword();
+        }
+    });
+
+    // --- التحكم بالكيبورد واللمس ---
+    
+    // 1. الكيبورد (للكمبيوتر)
+    document.addEventListener('keydown', function(e) {
+        if (currentSlide === 1) return; // منع التنقل قبل إدخال كلمة السر
+        
+        if (e.key === "ArrowLeft") moveSlide(1);  // السهم الأيسر = التالي
+        if (e.key === "ArrowRight") moveSlide(-1); // السهم الأيمن = السابق
+    });
+
+    // 2. اللمس (للموبايل)
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    document.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+    });
+    
+    document.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    });
+    
+    function handleSwipe() {
+        if (currentSlide === 1) return;
+        if (touchEndX < touchStartX - 50) moveSlide(1); // سحب لليسار = التالي
+        if (touchEndX > touchStartX + 50) moveSlide(-1); // سحب لليمين = السابق
+    }
+</script>
+
+</body>
+</html>
