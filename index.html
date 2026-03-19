@@ -173,8 +173,8 @@
     <!-- الشريحة 1: كلمة السر -->
     <div class="slide active" id="slide-1">
         <img src="Slide1.JPG" class="bg-media" alt="Slide 1">
-        <div class="overlay">
-            <input type="password" id="passInput" class="password-input" placeholder="أدخل كلمة السر (123)" style="width: 50%; opacity: 0.9;">
+        <div class="overlay
+            <input type="password" id="passInput" class="password-input" placeholder="أدخل كلمة السر (اكتب كلمة الر هنا)" style="width: 50%; opacity: 0.9;">
             <br>
             <button class="btn btn-next" onclick="checkPassword()">دخول</button>
             <p class="error-message" id="errorMsg" style="background: rgba(255,255,255,0.8); display: inline-block; padding: 5px; border-radius: 5px; display: none;">كلمة المرور غير صحيحة!</p>
@@ -255,7 +255,7 @@
         const input = document.getElementById('passInput');
         const error = document.getElementById('errorMsg');
         
-        if (input.value === '123') {
+        if (input.value === '299') {
             error.style.display = 'none';
             goToSlide(2);
         } else {
